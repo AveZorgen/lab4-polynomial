@@ -76,22 +76,23 @@ private:
 					}
 				}
 				if (p_st > 0) {
+					if (t.empty()) t = "1";
 					int pp = pow(P, p_st - 1);
 					m.s += stoi(t) * pp;
-					i++;
 				}
 				t = "";
 				ch = false;
 			}
 		}
-		if (!t.empty()) {
-			if (st == 0) {
+		if (st == 0) {
+			if (!t.empty()) {
 				m.c = stod(t);
 			}
-			if (st > 0) {
-				int pp = pow(P, st - 1);
-				m.s += stoi(t) * pp;
-			}
+		}
+		if (st > 0) {
+			if (t.empty()) t = "1";
+			int pp = pow(P, st - 1);
+			m.s += stoi(t) * pp;
 		}
 		return in;
 	}
