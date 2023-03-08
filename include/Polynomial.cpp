@@ -7,8 +7,8 @@ using namespace std;
 
 Polynomial::Polynomial() {
 	start = new Link(0);
-  start->next = start;
-    end = start;
+	start->next = start;
+	end = start;
 }
 
 Polynomial::Polynomial(const Polynomial& p) {
@@ -54,12 +54,12 @@ void Polynomial::addasc(Monom val) {
 		}
 		tmp = tmp->next;
 	}
-	auto* n = new Link(val, start);
+	Link* n = new Link(val, start);
 	tmp->next = n;
 }
 
 void Polynomial::addl(Monom val) {
-	auto* n = new Link(val, start);
+	Link* n = new Link(val, start);
 	end->next = n;
 	end = n;
 }
@@ -171,7 +171,7 @@ istream& operator >>(istream& in, Polynomial& p) {
 		}
 		else {
 			t += c;
-			if (c == '^') st = true; else st = false;
+			st = c == '^';
 		}
 	}
 	cout << "\n";
