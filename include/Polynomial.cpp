@@ -48,8 +48,15 @@ void Polynomial::addasc(Monom val) {
 			tmp->next = new_link;
 			return;
 		}
-		if (tmp->next->val == val) {
-			tmp->next->val = tmp->next->val + val;
+		if (tmp->next->val.deg_eq(val)) {
+			Monom m = tmp->next->val + val;
+			if (m.iszero()) {
+				Link* next = tmp->next;
+			    tmp->next = next->next;
+				delete next;
+			} else {
+			    tmp->next->val = m;
+			}
 			return;
 		}
 		tmp = tmp->next;
@@ -91,13 +98,13 @@ void Polynomial::clean() {
 //    return lln;
 //}
 
-Polynomial Polynomial::add(const Polynomial& p) {
+Polynomial Polynomial::operator +(const Polynomial& p) const {
 	Polynomial lln;
 	Link* tmp = start->next;
 	Link* tmp2 = p.start->next;
 	Monom m;
 	while (tmp != start && tmp2 != p.start) {
-		if (tmp->val == tmp2->val) {
+		if (tmp->val.deg_eq(tmp2->val)) {
 			m = tmp->val + tmp2->val;
 			if (!m.iszero())
 				lln.addl(m);
@@ -118,7 +125,7 @@ Polynomial Polynomial::add(const Polynomial& p) {
 	return lln;
 }
 
-Polynomial Polynomial::mul(const Polynomial& p) {
+Polynomial Polynomial::operator *(const Polynomial& p) const {
 	Polynomial lln;
 	Link* tmp = start->next;
 	Link* tmp2 = p.start->next;
@@ -136,7 +143,7 @@ Polynomial Polynomial::mul(const Polynomial& p) {
 	return lln;
 }
 
-double Polynomial::approx(double _x, double _y, double _z) {
+double Polynomial::approx(double _x, double _y, double _z) const {
 	Link* tmp = start->next;
 	double res = 0;
 	while (tmp != start) {
@@ -144,6 +151,18 @@ double Polynomial::approx(double _x, double _y, double _z) {
 		tmp = tmp->next;
 	}
 	return res;
+}
+
+bool Polynomial::operator==(const Polynomial& p) const {
+	Link* tmp = start->next;
+	Link* tmp2 = p.start->next;
+	while (tmp != start && tmp2 != p.start) {
+		if (!(tmp->val == tmp2->val)) return false;
+		tmp = tmp->next;
+		tmp2 = tmp2->next;
+	}
+	if (tmp!= start || tmp2 != p.start) return false;
+	return true;
 }
 
 
@@ -178,7 +197,7 @@ istream& operator >>(istream& in, Polynomial& p) {
 	return in;
 }
 
-ostream& operator <<(ostream& out, Polynomial& p) {
+ostream& operator <<(ostream& out, const Polynomial& p) {
 	Link* tmp = p.start->next;
 	while (tmp != p.start) {
 		out << tmp->val << " ";

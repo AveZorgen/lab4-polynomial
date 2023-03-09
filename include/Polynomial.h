@@ -20,10 +20,11 @@ private:
 		int xp = t % P;
 		return c * pow(_x, xp - P / 2) * pow(_y, yp - P / 2) * pow(_z, zp - P / 2);
 	}
-	bool operator ==(Monom& m) { return s == m.s; }
+	bool deg_eq(Monom& m) { return s == m.s; }
+	bool operator ==(Monom& m) const { return s == m.s && c == m.c; }
 	weak_ordering operator <=>(Monom& m) { return s <=> m.s; }
-	Monom operator+(Monom& m) { if (m != *this) throw exception("bad"); return { s, c + m.c }; }
-	Monom operator*(Monom& m) { return {s + m.s - (P * P * P + P * P + P) / 2, c * m.c }; }
+	Monom operator+(Monom& m) { return { s, c + m.c }; }
+	Monom operator*(Monom& m) const { return {s + m.s - (P * P * P + P * P + P) / 2, c * m.c }; }
 	friend ostream& operator <<(ostream& out, Monom& m) {
 		int t = m.s, zp, yp, xp;
 		t = (zp = t % P, t / P);
@@ -114,13 +115,14 @@ public:
 	Polynomial();
 	Polynomial(const Polynomial& p);
 	~Polynomial();
-	Polynomial& operator=(const Polynomial& p);
-	friend ostream& operator <<(ostream& out, Polynomial& p);
+	Polynomial& operator =(const Polynomial& p);
+	friend ostream& operator <<(ostream& out, const Polynomial& p);
 	friend istream& operator >>(istream& in, Polynomial& p);
 	void addasc(Monom val);
 	void clean();
 	//LList intersect(const LList& p);
-	Polynomial add(const Polynomial& p);
-	Polynomial mul(const Polynomial& p);
-	double approx(double _x, double _y, double _z);
+	Polynomial operator +(const Polynomial& p) const;
+	Polynomial operator *(const Polynomial& p) const;
+	bool operator==(const Polynomial&) const;
+	double approx(double _x, double _y, double _z) const;
 };
